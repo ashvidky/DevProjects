@@ -1,0 +1,76 @@
+package com.goeurope.test;
+
+import java.io.IOException;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+
+import com.goeurope.data.Location;
+import com.google.gson.Gson;
+
+public class GoEuropeTest {
+
+	public static void main(String[] args) {
+		
+		// TODO: validate
+		String query = args[0];
+
+		System.out.println("User request param:" + query);
+		
+		GoEuropeTest get = new GoEuropeTest();
+		try {
+			get.getLocation(query);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private String getJsonLocation(String query) throws Exception{
+		
+		String baseUri = "http://www.goeuro.com/GoEuroAPI/rest/api/v2/position/suggest/en";
+		String uri = baseUri + "/" + query;
+		
+		System.out.println("Requested URI:" + uri);
+		
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		HttpGet httpGet = new HttpGet(uri);
+		
+		CloseableHttpResponse response = httpclient.execute(httpGet);
+		String jsonLocation = "";
+		try {
+		    System.out.println(response.getStatusLine());
+		    HttpEntity responseEntity = response.getEntity();
+		    
+		    jsonLocation = EntityUtils.toString(responseEntity);
+		    System.out.println(jsonLocation);
+		    
+		    EntityUtils.consume(responseEntity);
+		} finally {
+		    response.close();
+		}
+		
+		return jsonLocation;
+	}
+
+	private void getLocation(String query) throws Exception{
+		
+		String jsonLocation = getJsonLocation(query);
+		
+		Gson gson = new Gson();
+		try {
+	 
+			//convert the json string back to object
+			Location[] obj = gson.fromJson(jsonLocation, Location[].class);
+	 
+			System.out.println(obj);
+	 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}

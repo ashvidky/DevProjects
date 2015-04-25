@@ -1,0 +1,143 @@
+package com.goeurope.data;
+
+import com.google.gson.annotations.SerializedName;
+
+public class Location {
+
+//	private LocationMetadata metadata;
+	
+	@SerializedName("_type") 
+	public String metaType;
+	@SerializedName("_id")
+	public String metaId;
+	
+	private String key;
+	private String name;
+	private String fullName;
+	private String iataAirportCode;
+	private String type;
+	private String country;
+	private Integer locationId;
+	private Boolean inEurope;
+	private String countryCode;
+	private Boolean coreCountry;
+	private Long distance;
+	@SerializedName("geo_position") 
+	private GeoPosition geoPosition;
+
+	public Location(){}
+	
+	public String getMetaType() {
+		return metaType;
+	}
+	public void setMetaType(String metaType) {
+		this.metaType = metaType;
+	}
+	public String getMetaId() {
+		return metaId;
+	}
+	public void setMetaId(String metaId) {
+		this.metaId = metaId;
+	}
+	public String getKey() {
+		return key;
+	}
+	public void setKey(String key) {
+		this.key = key;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getFullName() {
+		return fullName;
+	}
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+	public String getIataAirportCode() {
+		return iataAirportCode;
+	}
+	public void setIataAirportCode(String iataAirportCode) {
+		this.iataAirportCode = iataAirportCode;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	public String getCountry() {
+		return country;
+	}
+	public void setCountry(String country) {
+		this.country = country;
+	}
+	public GeoPosition getGeoPosition() {
+		return geoPosition;
+	}
+	public void setGeoPosition(GeoPosition geoPosition) {
+		this.geoPosition = geoPosition;
+	}
+	public Integer getLocationId() {
+		return locationId;
+	}
+	public void setLocationId(Integer locationId) {
+		this.locationId = locationId;
+	}
+	public Boolean getInEurope() {
+		return inEurope;
+	}
+	public void setInEurope(Boolean inEurope) {
+		this.inEurope = inEurope;
+	}
+	public String getCountryCode() {
+		return countryCode;
+	}
+	public void setCountryCode(String countryCode) {
+		this.countryCode = countryCode;
+	}
+	public Boolean getCoreCountry() {
+		return coreCountry;
+	}
+	public void setCoreCountry(Boolean coreCountry) {
+		this.coreCountry = coreCountry;
+	}
+	public Long getDistance() {
+		return distance;
+	}
+	public void setDistance(Long distance) {
+		this.distance = distance;
+	}
+	
+	public class GeoPosition {
+		private Double latitude;
+		private Double longitude;
+		
+		public GeoPosition(){}
+		
+		public Double getLatitude() {
+			return latitude;
+		}
+		public void setLatitude(Double latitude) {
+			this.latitude = latitude;
+		}
+		public Double getLongitude() {
+			return longitude;
+		}
+		public void setLongitude(Double longitude) {
+			this.longitude = longitude;
+		}
+	}
+}
+
+
+
+class LocationMetadata{
+	@SerializedName("_type") 
+	public String type;
+	@SerializedName("_id")
+	public String id;
+}

@@ -1,0 +1,145 @@
+package com.goeurope.test;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+
+import com.goeurope.data.Location;
+import com.google.gson.Gson;
+import com.opencsv.CSVWriter;
+
+public class GoEuropeTest {
+
+	public static void main(String[] args) {
+		
+		if (args == null || args.length != 1){
+			System.out.println("No input received or wrong parameters. Exiting...");
+			System.out.println("Please insert one input parameter");
+			return;
+		}
+		String query = args[0];
+		System.out.println("User request param:" + query);
+		
+		GoEuropeTest get = new GoEuropeTest();
+		try {
+			get.getLocationToCsv(query);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void getLocationToCsv(String query) throws Exception{
+		
+		String jsonLocation = searchLocation(query);
+		
+		Location[] locations = parseJsonLocation(jsonLocation);
+		
+		printToCsv(locations);
+	}
+	
+	/*
+	 * Performs search on web server for 'query' parameter.
+	 * Returns json string representing matching location
+	 */
+	private String searchLocation(String query) throws Exception{
+		
+		String baseUri = "http://www.goeuro.com/GoEuroAPI/rest/api/v2/position/suggest/en";
+		String uri = baseUri + "/" + query;
+		
+		System.out.println("Requested URI:" + uri);
+		
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		HttpGet httpGet = new HttpGet(uri);
+		
+		CloseableHttpResponse response = httpclient.execute(httpGet);
+		String jsonLocation = "";
+		try {
+		    System.out.println(response.getStatusLine());
+		    HttpEntity responseEntity = response.getEntity();
+		    
+		    jsonLocation = EntityUtils.toString(responseEntity);
+		    System.out.println(jsonLocation);
+		    
+		    EntityUtils.consume(responseEntity);
+		} finally {
+		    response.close();
+		}
+		
+		return jsonLocation;
+	}
+
+	/*
+	 * Converts json string to Location[] object
+	 */
+	private Location[] parseJsonLocation(String jsonLocation) throws Exception{
+		
+		Gson gson = new Gson();		
+		//convert the json string back to object
+		Location[] obj = gson.fromJson(jsonLocation, Location[].class);
+		System.out.println("Number of location objects received:" + obj.length);
+
+		return obj; 
+	}
+	
+	/*
+	 * Print location data to CSV file.
+	 */
+	private void printToCsv(Location[] locations) throws IOException{
+		String csvPath = "c:/temp/locations.csv";
+		
+
+
+		String fileLocation = new File(".").getCanonicalPath();
+		String fileName = "locations.csv";
+		
+		File csvFile = new File(fileLocation, fileName);
+		if (csvFile.exists()){
+			System.out.println("File exist. Delete old file...");
+			csvFile.delete();
+		}
+		
+		//create the file if does not exists
+		File file = new File(csvPath);
+		int i = csvPath.lastIndexOf(File.separator);
+		if(i!= -1) {
+			File filedir = new File(csvPath.substring(0, csvPath.lastIndexOf(File.separator)));
+			if(!filedir.exists()) {
+				filedir.mkdirs();
+			}
+		}
+
+		CSVWriter writer = new CSVWriter(new FileWriter(file, true));
+		try {
+			for(Location l: locations) {
+				int index = 0;
+				String[] rowInCsvFile = getValuesToPrint(l);
+				writer.writeNext(rowInCsvFile);
+			}
+		} finally {
+			if (writer != null) {
+				writer.close();
+			}
+		}
+		
+	}
+	
+	private String[] getValuesToPrint(Location location){
+		String[] titles = {"_type", "_id", "name", "type", "latitude", "longitude"};
+		String[] valuesToPrint = new String[titles.length];
+		valuesToPrint[0] = location.metaType;
+		valuesToPrint[1] = location.metaId;
+		valuesToPrint[2] = location.getName();
+		valuesToPrint[3] = location.getType();
+		valuesToPrint[4] = location.getGeoPosition().getLatitude().toString();
+		valuesToPrint[5] = location.getGeoPosition().getLongitude().toString();
+		
+		return valuesToPrint;
+	}
+}

@@ -1,0 +1,22 @@
+package com.goeurope.data;
+
+public class Location {
+
+	private String _type;
+	private String _id;
+	private String key;
+	private String name;
+	private String fullName;
+	private String iata_airport_code;
+	private String type;
+	private String country;
+	geo_position: {
+	latitude: 52.39886,
+	longitude: 13.06566
+	},
+	private int location_id;
+	private boolean inEurope;
+	private String countryCode;
+	coreCountry: true,
+	distance: null
+}

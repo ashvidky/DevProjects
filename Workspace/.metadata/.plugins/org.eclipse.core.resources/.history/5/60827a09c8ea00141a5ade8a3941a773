@@ -1,0 +1,65 @@
+package com.goeurope.test;
+
+import java.io.IOException;
+import java.util.Collection;
+
+public class CSVUtil {
+
+	private static<T> void dtoToCsvFile(String [] titles, Collection<T> dtos, String csvPath) throws IOException {		
+
+		//create the file if does not exists
+		File file = new File(csvPath);
+		
+		
+		
+		int i = csvPath.lastIndexOf(File.separator);
+		if(i!= -1) {
+			File filedir = new File(csvPath.substring(0, csvPath.lastIndexOf(File.separator)));
+			if(!filedir.exists()) {
+				filedir.mkdirs();
+			}
+		}
+		
+		
+		CSVWriter writer = null;//new CSVWriter(new FileWriter(file, append));
+		
+		if(noQuotas){
+			writer = new CSVWriter(new FileWriter(file, append));
+		}else{
+			writer = new CSVWriter(new FileWriter(file, append), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER);
+		}
+		
+		try {
+			
+			String[] orderedColumns = null;
+			
+			if(dtos.size() > 0) {
+				orderedColumns = getOrderedColumns(dtos.iterator().next().getClass(),false);
+			}
+			if(titles!=null){
+				writer.writeNext(titles);
+			}
+			for(T dto: dtos) {
+				int index = 0;
+				String[] rowInCsvFile = new String[orderedColumns.length];
+				for(String column:orderedColumns) {
+					String value = getValueForCsv(dto,column);
+					try {
+						value = priCsvWriteManipulation(dto,column,value);
+					} catch (Exception e) {
+						LogUtils.error(CSVUtils.class, "Cannot format value before writing to a CSV file for column:"+column+" value:"+value,e);
+					}
+					rowInCsvFile[index] = value;
+					index++;					
+				}
+				
+				writer.writeNext(rowInCsvFile);
+				
+			}
+		} finally {
+			if (writer != null) {
+				writer.close();
+			}
+		}
+	}
+}

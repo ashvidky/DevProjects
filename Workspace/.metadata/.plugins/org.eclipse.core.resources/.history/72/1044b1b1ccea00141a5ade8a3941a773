@@ -1,0 +1,131 @@
+package com.goeurope.test;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+
+import com.goeurope.data.Location;
+import com.google.gson.Gson;
+import com.opencsv.CSVWriter;
+
+public class GoEuropeTest {
+
+	public static void main(String[] args) {
+		
+		// TODO: validate
+		String query = args[0];
+
+		System.out.println("User request param:" + query);
+		
+		GoEuropeTest get = new GoEuropeTest();
+		try {
+			get.getLocation(query);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private String getJsonLocation(String query) throws Exception{
+		
+		String baseUri = "http://www.goeuro.com/GoEuroAPI/rest/api/v2/position/suggest/en";
+		String uri = baseUri + "/" + query;
+		
+		System.out.println("Requested URI:" + uri);
+		
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		HttpGet httpGet = new HttpGet(uri);
+		
+		CloseableHttpResponse response = httpclient.execute(httpGet);
+		String jsonLocation = "";
+		try {
+		    System.out.println(response.getStatusLine());
+		    HttpEntity responseEntity = response.getEntity();
+		    
+		    jsonLocation = EntityUtils.toString(responseEntity);
+		    System.out.println(jsonLocation);
+		    
+		    EntityUtils.consume(responseEntity);
+		} finally {
+		    response.close();
+		}
+		
+		return jsonLocation;
+	}
+
+	private void getLocation(String query) throws Exception{
+		
+		String jsonLocation = getJsonLocation(query);
+		
+		Gson gson = new Gson();
+		try {
+	 
+			//convert the json string back to object
+			Location[] obj = gson.fromJson(jsonLocation, Location[].class);
+	 
+			System.out.println(obj);
+	 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private printToCsv(Location[] locations){
+		String csvPath = "";
+		//create the file if does not exists
+		File file = new File(csvPath);
+		int i = csvPath.lastIndexOf(File.separator);
+		if(i!= -1) {
+			File filedir = new File(csvPath.substring(0, csvPath.lastIndexOf(File.separator)));
+			if(!filedir.exists()) {
+				filedir.mkdirs();
+			}
+		}
+
+		CSVWriter writer = new CSVWriter(new FileWriter(file, true));
+		try {
+			for(Location l: locations) {
+				int index = 0;
+				String[] rowInCsvFile = new String[orderedColumns.length];
+				for(String column:orderedColumns) {
+					String value = getValueForCsv(dto,column);
+					try {
+						value = priCsvWriteManipulation(dto,column,value);
+					} catch (Exception e) {
+						LogUtils.error(CSVUtils.class, "Cannot format value before writing to a CSV file for column:"+column+" value:"+value,e);
+					}
+					rowInCsvFile[index] = value;
+					index++;					
+				}
+				
+				writer.writeNext(rowInCsvFile);
+				
+			}
+		} finally {
+			if (writer != null) {
+				writer.close();
+			}
+		}
+		
+	}
+	
+	private String[] getValuesToPrint(Location location){
+		String[] titles = {"_type", "_id", "name", "type", "latitude", "longitude"};
+		String[] valuesToPrint = new String[titles.length];
+		valuesToPrint[0] = location.metaType;
+		valuesToPrint[1] = location.metaId;
+		valuesToPrint[2] = location.getName();
+		valuesToPrint[3] = location.getType();
+		valuesToPrint[4] = location.getGeoPosition().getLatitude().toString();
+		valuesToPrint[5] = location.getGeoPosition().getLongitude().toString();
+		
+		return valuesToPrint;
+	}
+}

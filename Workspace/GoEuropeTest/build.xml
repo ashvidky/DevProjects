@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project GoEuropeTest with Jar-in-Jar Loader">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+        <jar destfile="D:/Dev/Workspace/GoEuropeTest/build/GoEuropeTest.jar">
+            <manifest>
+                <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
+                <attribute name="Rsrc-Main-Class" value="com.goeurope.test.GoEuropeTest"/>
+                <attribute name="Class-Path" value="."/>
+                <attribute name="Rsrc-Class-Path" value="./ commons-codec-1.9.jar commons-logging-1.2.jar fluent-hc-4.4.1.jar httpclient-4.4.1.jar httpclient-cache-4.4.1.jar httpclient-win-4.4.1.jar httpcore-4.4.1.jar httpmime-4.4.1.jar jna-4.1.0.jar jna-platform-4.1.0.jar opencsv-3.3.jar gson-2.3.1.jar"/>
+            </manifest>
+            <zipfileset src="jar-in-jar-loader.zip"/>
+            <fileset dir="D:/Dev/Workspace/GoEuropeTest/bin"/>
+            <zipfileset dir="D:\Dev\Workspace\GoEuropeTest\lib\httpcomponents-client-4.4.1\lib" includes="commons-codec-1.9.jar"/>
+            <zipfileset dir="D:\Dev\Workspace\GoEuropeTest\lib\httpcomponents-client-4.4.1\lib" includes="commons-logging-1.2.jar"/>
+            <zipfileset dir="D:\Dev\Workspace\GoEuropeTest\lib\httpcomponents-client-4.4.1\lib" includes="fluent-hc-4.4.1.jar"/>
+            <zipfileset dir="D:\Dev\Workspace\GoEuropeTest\lib\httpcomponents-client-4.4.1\lib" includes="httpclient-4.4.1.jar"/>
+            <zipfileset dir="D:\Dev\Workspace\GoEuropeTest\lib\httpcomponents-client-4.4.1\lib" includes="httpclient-cache-4.4.1.jar"/>
+            <zipfileset dir="D:\Dev\Workspace\GoEuropeTest\lib\httpcomponents-client-4.4.1\lib" includes="httpclient-win-4.4.1.jar"/>
+            <zipfileset dir="D:\Dev\Workspace\GoEuropeTest\lib\httpcomponents-client-4.4.1\lib" includes="httpcore-4.4.1.jar"/>
+            <zipfileset dir="D:\Dev\Workspace\GoEuropeTest\lib\httpcomponents-client-4.4.1\lib" includes="httpmime-4.4.1.jar"/>
+            <zipfileset dir="D:\Dev\Workspace\GoEuropeTest\lib\httpcomponents-client-4.4.1\lib" includes="jna-4.1.0.jar"/>
+            <zipfileset dir="D:\Dev\Workspace\GoEuropeTest\lib\httpcomponents-client-4.4.1\lib" includes="jna-platform-4.1.0.jar"/>
+            <zipfileset dir="D:\Dev\Workspace\GoEuropeTest\lib\openCSV" includes="opencsv-3.3.jar"/>
+            <zipfileset dir="D:\Dev\Workspace\GoEuropeTest\lib\gson" includes="gson-2.3.1.jar"/>
+        </jar>
+    </target>
+</project>

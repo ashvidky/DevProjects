@@ -1,0 +1,12 @@
+package com.goeurope.test;
+
+public class GoEuropeTest {
+
+	public static void main(String[] args) {
+		
+		// TODO: validate
+		String location = args[0];
+
+	}
+
+}

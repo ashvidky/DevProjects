@@ -1,0 +1,6 @@
+package com.goeurope.data;
+
+public class GeoPosition {
+	private Double latitude;
+	private Double longitude;
+}
